@@ -1,0 +1,6 @@
+{
+  "require": {
+    "php": "^8.4",
+    "minishlink/web-push": "^10.0"
+  }
+}
