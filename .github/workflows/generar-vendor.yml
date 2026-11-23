@@ -1,7 +1,10 @@
 name: Generar Minishlink para PHP 8.4
 
-on:
+'on':
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   generar-vendor:
