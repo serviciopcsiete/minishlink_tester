@@ -1,1 +1,36 @@
+name: Generar Minishlink para PHP 8.4
 
+on:
+  workflow_dispatch:
+
+jobs:
+  generar-vendor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, mbstring, openssl, gmp, bcmath
+          tools: composer:v2
+
+      - name: Instalar dependencias
+        run: composer update --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Verificar Minishlink
+        run: |
+          php -r "require 'vendor/autoload.php'; if (!class_exists('Minishlink\\WebPush\\WebPush')) { exit(1); } echo 'Minishlink disponible';"
+
+      - name: Crear paquete ZIP
+        run: zip -r minishlink-vendor.zip vendor composer.json composer.lock
+
+      - name: Publicar archivo descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: minishlink-php84
+          path: minishlink-vendor.zip
+          retention-days: 7
